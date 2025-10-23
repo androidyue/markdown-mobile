@@ -5,11 +5,12 @@
   const fileInput = document.getElementById('file-input');
   const syncCheckbox = document.getElementById('sync-scroll');
   const uploadButton = document.getElementById('upload-button');
-  const printButton = document.getElementById('print-button');
+  const copyPreviewButton = document.getElementById('copy-preview');
 
   const STORAGE_KEY = 'markdown-studio-content';
   const THEME_KEY = 'markdown-studio-theme';
   const AUTOSAVE_DELAY = 400;
+  const COPY_RESET_DELAY = 1500;
 
   const defaultMarkdown = `# Markdown Studio
 
@@ -180,6 +181,85 @@ function greet(name) {
     reader.readAsText(file);
   }
 
+  let copyFeedbackTimer;
+
+  function setCopyFeedback({ title, active, delay = COPY_RESET_DELAY }) {
+    if (!copyPreviewButton) return;
+    copyPreviewButton.title = title;
+    copyPreviewButton.classList.toggle('is-active', Boolean(active));
+    clearTimeout(copyFeedbackTimer);
+    copyFeedbackTimer = setTimeout(() => {
+      copyPreviewButton.title = 'Copy rendered HTML';
+      copyPreviewButton.classList.remove('is-active');
+    }, delay);
+  }
+
+  function legacyCopy(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'absolute';
+    textarea.style.left = '-9999px';
+    document.body.appendChild(textarea);
+    const selection = document.getSelection();
+    const storedRange = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+    textarea.select();
+    let successful = false;
+    try {
+      successful = document.execCommand('copy');
+    } catch (err) {
+      successful = false;
+    }
+    document.body.removeChild(textarea);
+    if (storedRange && selection) {
+      selection.removeAllRanges();
+      selection.addRange(storedRange);
+    }
+    return successful;
+  }
+
+  async function copyPreview() {
+    if (!copyPreviewButton) return;
+    const html = preview.innerHTML;
+    const plain = preview.innerText;
+
+    try {
+      if (navigator.clipboard?.write && typeof ClipboardItem !== 'undefined') {
+        const blobHtml = new Blob([html], { type: 'text/html' });
+        const blobText = new Blob([plain], { type: 'text/plain' });
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            'text/html': blobHtml,
+            'text/plain': blobText
+          })
+        ]);
+        setCopyFeedback({ title: 'Copied!', active: true });
+        return;
+      }
+
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(html);
+        setCopyFeedback({ title: 'Copied!', active: true });
+        return;
+      }
+
+      if (legacyCopy(plain)) {
+        setCopyFeedback({ title: 'Copied (plain text)', active: true });
+        return;
+      }
+
+      throw new Error('Clipboard API not supported');
+    } catch (err) {
+      console.warn('Copy failed', err);
+      if (legacyCopy(plain)) {
+        setCopyFeedback({ title: 'Copied (plain text)', active: true });
+        return;
+      }
+
+      setCopyFeedback({ title: 'Copy failed', active: false, delay: 2000 });
+    }
+  }
+
   function exportMarkdown() {
     const blob = new Blob([editor.value], { type: 'text/markdown' });
     const url = URL.createObjectURL(blob);
@@ -282,8 +362,8 @@ function greet(name) {
     uploadButton.addEventListener('click', () => fileInput.click());
   }
 
-  if (printButton) {
-    printButton.addEventListener('click', () => window.print());
+  if (copyPreviewButton) {
+    copyPreviewButton.addEventListener('click', copyPreview);
   }
 
   syncCheckbox.addEventListener('change', () => {

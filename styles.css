@@ -123,6 +123,13 @@ body {
   pointer-events: none;
 }
 
+.button-icon.is-active,
+.button-icon.is-active:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;
