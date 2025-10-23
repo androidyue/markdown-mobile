@@ -14,7 +14,7 @@
 Start writing on the left and watch your preview update in real time.
 
 ## Features
-- Familiar toolbar for common formatting
+- Clean interface focused on writing and previewing
 - Keyboard friendly (Markdown shortcuts still work!)
 - Autosaves your progress to this browser
 - Import or export plain Markdown files
@@ -275,7 +275,10 @@ function greet(name) {
     fileInput.value = '';
   });
 
-  document.querySelector('.toolbar-actions').addEventListener('click', handleToolbarClick);
+  const toolbar = document.querySelector('.toolbar-actions');
+  if (toolbar) {
+    toolbar.addEventListener('click', handleToolbarClick);
+  }
 
   syncCheckbox.addEventListener('change', () => {
     if (syncCheckbox.checked) {

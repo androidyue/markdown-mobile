@@ -44,70 +44,12 @@ body {
   flex: 1;
 }
 
-.toolbar {
-  background: var(--panel-bg);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 1rem;
-  height: 64px;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 600;
-  font-size: 1.1rem;
-}
-
-.brand i {
-  color: var(--accent);
-}
-
-.toolbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.btn {
-  border: none;
-  background: transparent;
-  color: var(--text);
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background var(--transition), color var(--transition);
-}
-
-.btn:hover {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
-.btn:active {
-  transform: translateY(1px);
-}
-
-.divider {
-  width: 1px;
-  height: 28px;
-  background: var(--border);
-  margin: 0 0.15rem;
-}
-
 .workspace {
   flex: 1;
   display: flex;
   padding: 1rem;
   gap: 1rem;
-  height: calc(100vh - 64px);
+  min-height: 0;
   overflow: hidden;
 }
 
@@ -277,19 +219,6 @@ textarea::selection {
 }
 
 @media (max-width: 680px) {
-  .toolbar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-    height: auto;
-    padding: 0.75rem;
-  }
-
-  .toolbar-actions {
-    flex-wrap: wrap;
-    justify-content: flex-start;
-  }
-
   .workspace {
     padding: 0.75rem;
   }

@@ -40,12 +40,13 @@ function sendFile(res, filePath) {
 }
 
 const server = http.createServer((req, res) => {
-  const urlPath = decodeURIComponent(req.url.split('?')[0]);
-  let filePath = path.join(ROOT, urlPath);
-
-  if (urlPath === '/' || urlPath === '') {
-    filePath = path.join(ROOT, 'index.html');
-  }
+  const requestPath = decodeURIComponent(req.url.split('?')[0]);
+  const normalizedPath = path.normalize(requestPath).replace(/^([.]{2}[\/])+/, '');
+  const trimmedPath = normalizedPath.startsWith(path.sep)
+    ? normalizedPath.slice(1)
+    : normalizedPath;
+  const targetPath = trimmedPath === '' ? 'index.html' : trimmedPath;
+  const filePath = path.join(ROOT, targetPath);
 
   // Prevent directory traversal
   if (!filePath.startsWith(ROOT)) {
@@ -56,7 +57,7 @@ const server = http.createServer((req, res) => {
 
   fs.stat(filePath, (err, stats) => {
     if (err) {
-      if (urlPath !== '/' && !urlPath.includes('.')) {
+      if (requestPath !== '/' && !requestPath.includes('.')) {
         // fallback to index.html for routes without extension
         sendFile(res, path.join(ROOT, 'index.html'));
         return;
