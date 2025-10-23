@@ -21,6 +21,31 @@
     return;
   }
 
+  if (!window.hljs) {
+    console.error('Highlight.js failed to load.');
+  } else {
+    console.log('Highlight.js loaded successfully', window.hljs.listLanguages());
+  }
+
+  // Configure marked renderer for code highlighting
+  const renderer = new marked.Renderer();
+  const originalCodeRenderer = renderer.code.bind(renderer);
+
+  renderer.code = function(code, language) {
+    if (!window.hljs || !language) {
+      return originalCodeRenderer(code, language);
+    }
+
+    try {
+      const validLanguage = window.hljs.getLanguage(language) ? language : 'plaintext';
+      const highlighted = window.hljs.highlight(code, { language: validLanguage });
+      return `<pre><code class="hljs language-${language}">${highlighted.value}</code></pre>`;
+    } catch (err) {
+      console.error('Highlight error:', err);
+      return originalCodeRenderer(code, language);
+    }
+  };
+
   const defaultMarkdown = `# Markdown Studio
 
 Start writing on the left and watch your preview update in real time.
@@ -49,14 +74,11 @@ function greet(name) {
 > “Writing is easy. All you have to do is cross out the wrong words.” – Mark Twain
 `;
 
-  marked.use({
-    breaks: true,
-    highlight(code, lang) {
-      if (lang && window.hljs.getLanguage(lang)) {
-        return window.hljs.highlight(code, { language: lang }).value;
-      }
-      return window.hljs.highlightAuto(code).value;
-    }
+  marked.setOptions({
+    renderer: renderer,
+    pedantic: false,
+    gfm: true,
+    breaks: true
   });
 
   function render(value) {
