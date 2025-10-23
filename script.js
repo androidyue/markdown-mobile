@@ -12,6 +12,15 @@
   const AUTOSAVE_DELAY = 400;
   const COPY_RESET_DELAY = 1500;
 
+  const marked = window.marked;
+  if (!marked) {
+    console.error('Markdown renderer failed to load.');
+    if (preview) {
+      preview.innerHTML = '<div class="empty-state">Markdown preview unavailable. Please refresh the page.</div>';
+    }
+    return;
+  }
+
   const defaultMarkdown = `# Markdown Studio
 
 Start writing on the left and watch your preview update in real time.
