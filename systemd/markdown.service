@@ -1,0 +1,16 @@
+[Unit]
+Description=Markdown static site server
+After=network.target
+
+[Service]
+Type=simple
+Environment=PORT=3001
+WorkingDirectory=/home/andy/github/markdown
+ExecStart=/usr/bin/env node server.js
+Restart=on-failure
+RestartSec=5
+User=andy
+Group=andy
+
+[Install]
+WantedBy=multi-user.target

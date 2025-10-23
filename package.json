@@ -1,0 +1,12 @@
+{
+  "name": "markdown",
+  "version": "1.0.0",
+  "description": "Static markdown viewer served over Node.js",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "ISC",
+  "type": "commonjs"
+}
