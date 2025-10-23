@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Markdown Studio</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkAo2zSlTps995zGHm0Dp1l5X776/S3eG1DwW4k5f5p3NF1dL+ljXr4Mw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" integrity="sha512-1ONY9yKXFGLlVIXs2QEcsNKC6zqghbZ/5isCwV59K2yxcvEvd2z+5+mrbewX5megaMx5FvZm9XquJO7wFawYaw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -14,7 +14,10 @@
       <section class="editor-pane">
         <header class="pane-header">
           <span>Markdown</span>
-          <span class="status" id="autosave-status">Saved</span>
+          <div class="pane-actions">
+            <span class="status" id="autosave-status">Saved</span>
+            <button class="button" id="upload-button" type="button">Upload Markdown</button>
+          </div>
         </header>
         <textarea id="editor" spellcheck="false"></textarea>
       </section>
@@ -26,16 +29,16 @@
               <input type="checkbox" id="sync-scroll" checked>
               <span>Sync</span>
             </label>
-            <button class="btn" data-action="print" title="Print / PDF"><i class="fa-solid fa-print"></i></button>
+            <button class="button button-icon" id="print-button" type="button" title="Print / PDF"><i class="fa-solid fa-print"></i></button>
           </div>
         </header>
         <article id="preview" class="preview-content"></article>
       </section>
     </main>
-    <input type="file" id="file-input" accept=".md,.markdown,.txt" hidden>
+    <input type="file" id="file-input" class="visually-hidden" accept=".md,.markdown,.txt">
   </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js" integrity="sha512-LSO7FLLQlJ7QKQn3nC2LhM9u0mq5Yio7CMrMAKoUP4xq/52k5WfPGM6uz7D26ZAWpy37pEqRtyXp+MfKruifkQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-1LlitMTl1gMKLk4L/gGQ6PrDshP8REh8gJ9ENhv1Zism/2xoHHmeOxMgFwPEz7nJZKLoRYKAH1ChcxrXjfjacg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" referrerpolicy="no-referrer"></script>
   <script src="script.js"></script>
 </body>
 </html>

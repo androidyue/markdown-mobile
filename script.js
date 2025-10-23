@@ -4,6 +4,8 @@
   const autosaveStatus = document.getElementById('autosave-status');
   const fileInput = document.getElementById('file-input');
   const syncCheckbox = document.getElementById('sync-scroll');
+  const uploadButton = document.getElementById('upload-button');
+  const printButton = document.getElementById('print-button');
 
   const STORAGE_KEY = 'markdown-studio-content';
   const THEME_KEY = 'markdown-studio-theme';
@@ -17,13 +19,14 @@ Start writing on the left and watch your preview update in real time.
 - Clean interface focused on writing and previewing
 - Keyboard friendly (Markdown shortcuts still work!)
 - Autosaves your progress to this browser
-- Import or export plain Markdown files
+- Upload plain Markdown files to continue working
+- Export Markdown or print to PDF when you're done
 - Dark mode for those late night writing sessions
 
 ## Code highlighting
 \`\`\`js
 function greet(name) {
-  return \\`Hello, ${name}!\\`;
+  return \`Hello, ${name}!\`;
 }
 \`\`\`
 
@@ -275,9 +278,12 @@ function greet(name) {
     fileInput.value = '';
   });
 
-  const toolbar = document.querySelector('.toolbar-actions');
-  if (toolbar) {
-    toolbar.addEventListener('click', handleToolbarClick);
+  if (uploadButton) {
+    uploadButton.addEventListener('click', () => fileInput.click());
+  }
+
+  if (printButton) {
+    printButton.addEventListener('click', () => window.print());
   }
 
   syncCheckbox.addEventListener('change', () => {

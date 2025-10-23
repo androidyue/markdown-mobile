@@ -6,7 +6,7 @@ After=network.target
 Type=simple
 Environment=PORT=3001
 WorkingDirectory=/home/andy/github/markdown
-ExecStart=/usr/bin/env node server.js
+ExecStart=/home/andy/.nvm/versions/node/v24.9.0/bin/node --watch server.js
 Restart=on-failure
 RestartSec=5
 User=andy
