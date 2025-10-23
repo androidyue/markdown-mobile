@@ -203,15 +203,42 @@ function greet(name) {
     }, delay);
   }
 
-  function legacyCopy(text) {
+  function copyWithSelection(element) {
+    if (!element) return false;
+    const selection = window.getSelection();
+    if (!selection) return false;
+
+    const storedRanges = [];
+    for (let i = 0; i < selection.rangeCount; i += 1) {
+      storedRanges.push(selection.getRangeAt(i));
+    }
+
+    const range = document.createRange();
+    range.selectNodeContents(element);
+
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    let successful = false;
+    try {
+      successful = document.execCommand('copy');
+    } catch (err) {
+      successful = false;
+    }
+
+    selection.removeAllRanges();
+    storedRanges.forEach(savedRange => selection.addRange(savedRange));
+
+    return successful;
+  }
+
+  function copyPlainText(text) {
     const textarea = document.createElement('textarea');
     textarea.value = text;
     textarea.setAttribute('readonly', '');
     textarea.style.position = 'absolute';
     textarea.style.left = '-9999px';
     document.body.appendChild(textarea);
-    const selection = document.getSelection();
-    const storedRange = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
     textarea.select();
     let successful = false;
     try {
@@ -220,10 +247,6 @@ function greet(name) {
       successful = false;
     }
     document.body.removeChild(textarea);
-    if (storedRange && selection) {
-      selection.removeAllRanges();
-      selection.addRange(storedRange);
-    }
     return successful;
   }
 
@@ -246,13 +269,18 @@ function greet(name) {
         return;
       }
 
+      if (copyWithSelection(preview)) {
+        setCopyFeedback({ title: 'Copied with formatting!', active: true });
+        return;
+      }
+
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(html);
         setCopyFeedback({ title: 'Copied!', active: true });
         return;
       }
 
-      if (legacyCopy(plain)) {
+      if (copyPlainText(plain)) {
         setCopyFeedback({ title: 'Copied (plain text)', active: true });
         return;
       }
@@ -260,7 +288,12 @@ function greet(name) {
       throw new Error('Clipboard API not supported');
     } catch (err) {
       console.warn('Copy failed', err);
-      if (legacyCopy(plain)) {
+      if (copyWithSelection(preview)) {
+        setCopyFeedback({ title: 'Copied with formatting!', active: true });
+        return;
+      }
+
+      if (copyPlainText(plain)) {
         setCopyFeedback({ title: 'Copied (plain text)', active: true });
         return;
       }
