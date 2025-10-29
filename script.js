@@ -298,7 +298,7 @@ function greet(name) {
   async function copyPreview() {
     if (!copyPreviewButton) return;
     const html = preview.innerHTML;
-    const plain = preview.innerText;
+    const plain = preview.textContent || preview.innerText;
 
     try {
       // Try selection-based copy first (best for formatting preservation)
