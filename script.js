@@ -249,9 +249,16 @@ function greet(name) {
   }
 
   function copyWithSelection(element) {
-    if (!element) return false;
+    console.log('copyWithSelection: Starting selection-based copy');
+    if (!element) {
+      console.log('copyWithSelection: No element provided');
+      return false;
+    }
     const selection = window.getSelection();
-    if (!selection) return false;
+    if (!selection) {
+      console.log('copyWithSelection: No selection API available');
+      return false;
+    }
 
     const storedRanges = [];
     for (let i = 0; i < selection.rangeCount; i += 1) {
@@ -267,7 +274,9 @@ function greet(name) {
     let successful = false;
     try {
       successful = document.execCommand('copy');
+      console.log(`copyWithSelection: execCommand('copy') returned ${successful}`);
     } catch (err) {
+      console.error('copyWithSelection: execCommand failed with error', err);
       successful = false;
     }
 
@@ -278,6 +287,7 @@ function greet(name) {
   }
 
   function copyPlainText(text) {
+    console.log('copyPlainText: Starting plain text copy');
     const textarea = document.createElement('textarea');
     textarea.value = text;
     textarea.setAttribute('readonly', '');
@@ -288,7 +298,9 @@ function greet(name) {
     let successful = false;
     try {
       successful = document.execCommand('copy');
+      console.log(`copyPlainText: execCommand('copy') returned ${successful}`);
     } catch (err) {
+      console.error('copyPlainText: execCommand failed with error', err);
       successful = false;
     }
     document.body.removeChild(textarea);
@@ -296,12 +308,14 @@ function greet(name) {
   }
 
   function normalizeHtmlForCopy(htmlContent) {
+    console.log('normalizeHtmlForCopy: Starting HTML normalization');
     // Create a temporary div to manipulate the HTML
     const temp = document.createElement('div');
     temp.innerHTML = htmlContent;
 
     // Add white-space: nowrap to all inline elements to prevent line breaks
     const inlineElements = temp.querySelectorAll('strong, em, code, a, span');
+    console.log(`normalizeHtmlForCopy: Found ${inlineElements.length} inline elements to normalize`);
     inlineElements.forEach(el => {
       el.style.whiteSpace = 'nowrap';
     });
@@ -314,10 +328,12 @@ function greet(name) {
     wrapper.style.color = '#24292f';
     wrapper.appendChild(temp);
 
+    console.log('normalizeHtmlForCopy: HTML normalization complete');
     return wrapper.innerHTML;
   }
 
   async function copyPreview() {
+    console.log('copyPreview: Starting copy operation');
     if (!copyPreviewButton) return;
     const html = preview.innerHTML;
     const plain = preview.textContent || preview.innerText;
@@ -325,6 +341,7 @@ function greet(name) {
     try {
       // Try modern Clipboard API with both formatted HTML and plain text
       if (navigator.clipboard?.write && typeof ClipboardItem !== 'undefined') {
+        console.log('copyPreview: Using modern Clipboard API');
         const normalizedHtml = normalizeHtmlForCopy(html);
         const blobHtml = new Blob([normalizedHtml], { type: 'text/html' });
         const blobText = new Blob([plain], { type: 'text/plain' });
@@ -334,28 +351,35 @@ function greet(name) {
             'text/plain': blobText
           })
         ]);
+        console.log('copyPreview: Modern Clipboard API succeeded');
         setCopyFeedback({ title: 'Copied!', active: true });
         showSnackbar('✓ Copied with formatting');
         return;
       }
 
       // Try selection-based copy as fallback
+      console.log('copyPreview: Trying selection-based copy');
       if (copyWithSelection(preview)) {
+        console.log('copyPreview: Selection-based copy succeeded');
         setCopyFeedback({ title: 'Copied with formatting!', active: true });
         showSnackbar('✓ Copied with formatting');
         return;
       }
 
       // Fallback to copying HTML as text
+      console.log('copyPreview: Trying clipboard.writeText with HTML');
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(html);
+        console.log('copyPreview: clipboard.writeText succeeded');
         setCopyFeedback({ title: 'Copied HTML!', active: true });
         showSnackbar('✓ Copied HTML');
         return;
       }
 
       // Final fallback to plain text
+      console.log('copyPreview: Trying plain text copy');
       if (copyPlainText(plain)) {
+        console.log('copyPreview: Plain text copy succeeded');
         setCopyFeedback({ title: 'Copied (plain text)', active: true });
         showSnackbar('✓ Copied as plain text');
         return;
@@ -363,19 +387,24 @@ function greet(name) {
 
       throw new Error('Clipboard API not supported');
     } catch (err) {
-      console.warn('Copy failed', err);
+      console.warn('copyPreview: Copy failed with error', err);
+      console.log('copyPreview: Trying error fallback with selection');
       if (copyWithSelection(preview)) {
+        console.log('copyPreview: Error fallback selection succeeded');
         setCopyFeedback({ title: 'Copied with formatting!', active: true });
         showSnackbar('✓ Copied with formatting');
         return;
       }
 
+      console.log('copyPreview: Trying error fallback with plain text');
       if (copyPlainText(plain)) {
+        console.log('copyPreview: Error fallback plain text succeeded');
         setCopyFeedback({ title: 'Copied (plain text)', active: true });
         showSnackbar('✓ Copied as plain text');
         return;
       }
 
+      console.error('copyPreview: All copy methods failed');
       setCopyFeedback({ title: 'Copy failed', active: false, delay: 2000 });
       showSnackbar('✗ Copy failed');
     }
