@@ -474,14 +474,28 @@ function greet(name) {
         el.style.whiteSpace = 'normal'; // Allow wrapping but keep inline elements together
         el.style.wordBreak = 'normal'; // Don't break words
 
-        // Add bullet character if parent is UL (公众号 doesn't render CSS list-style properly)
         const parentList = el.parentElement;
+
+        // Add bullet character if parent is UL (公众号 doesn't render CSS list-style properly)
         if (parentList && parentList.tagName === 'UL') {
           // Check if bullet already exists
           const firstChild = el.firstChild;
           if (!firstChild || firstChild.nodeType !== Node.TEXT_NODE || !firstChild.textContent.startsWith('•')) {
             // Prepend bullet character
             el.insertBefore(document.createTextNode('• '), el.firstChild);
+          }
+        }
+
+        // Add number if parent is OL (公众号 doesn't render CSS list-style-type properly)
+        if (parentList && parentList.tagName === 'OL') {
+          const firstChild = el.firstChild;
+          // Check if number already exists
+          if (!firstChild || firstChild.nodeType !== Node.TEXT_NODE || !/^\d+\.\s/.test(firstChild.textContent)) {
+            // Find the index of this li in the ol
+            const items = Array.from(parentList.children);
+            const index = items.indexOf(el);
+            // Prepend number
+            el.insertBefore(document.createTextNode(`${index + 1}. `), el.firstChild);
           }
         }
       }
@@ -502,6 +516,7 @@ function greet(name) {
       }
 
       if (tagName === 'ol') {
+        el.style.listStyle = 'none'; // We add numbers manually as text
         el.style.paddingLeft = '1em';
         el.style.marginLeft = '0';
         el.style.fontSize = baseFontSize;
