@@ -334,12 +334,13 @@ function greet(name) {
 
     normalizeWhitespace(temp);
 
-    // Base font styling for WeChat compatibility (following doocs/md approach)
+    // Base font styling for WeChat 公众号 compatibility (following doocs/md approach)
     // CRITICAL: Use -apple-system-font (with hyphen at end) for WeChat
     const baseFontFamily = '-apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif';
     const baseLineHeight = '1.75';
     const baseFontSize = '14px'; // WeChat uses 14px, not 16px
-    const baseColor = '#24292f';
+    const primaryColor = '#0F4C81'; // WeChat 公众号 primary color
+    const baseColor = 'hsl(0, 0%, 15%)'; // Equivalent to foreground color
 
     // Add inline styles to ALL elements for better paste compatibility
     const allElements = temp.querySelectorAll('*');
@@ -348,7 +349,8 @@ function greet(name) {
     allElements.forEach(el => {
       const tagName = el.tagName.toLowerCase();
 
-      // Add base styles to EVERY element (critical for cross-app compatibility)
+      // Add base styles to EVERY element (critical for 公众号 compatibility)
+      el.style.setProperty('--md-primary-color', primaryColor);
       el.style.fontFamily = baseFontFamily;
       el.style.lineHeight = baseLineHeight;
       el.style.textAlign = 'left';
@@ -359,10 +361,10 @@ function greet(name) {
         el.style.display = 'inline';
       }
 
-      // Strong/bold tags
+      // Strong/bold tags (use CSS variable for color - 公众号 requirement)
       if (tagName === 'strong' || tagName === 'b') {
         el.style.fontWeight = 'bold';
-        el.style.color = baseColor;
+        el.style.color = 'var(--md-primary-color)';
       }
 
       // Emphasis/italic tags
@@ -410,17 +412,35 @@ function greet(name) {
         el.style.color = baseColor;
       }
 
-      // List items (WeChat-specific formatting - CRITICAL)
+      // List items (公众号-specific formatting - CRITICAL)
       if (tagName === 'li') {
         el.style.textIndent = '-1em'; // CRITICAL: Prevents text wrapping issues
         el.style.display = 'block';
         el.style.margin = '0.2em 8px';
         el.style.fontSize = baseFontSize;
+        el.style.color = 'hsl(var(--foreground))';
       }
 
-      // Lists
-      if (tagName === 'ul' || tagName === 'ol') {
-        el.style.paddingLeft = '2em';
+      // Lists (公众号-specific formatting)
+      if (tagName === 'ul') {
+        el.style.listStyle = 'circle';
+        el.style.paddingLeft = '1em'; // doocs/md uses 1em, not 2em
+        el.style.marginLeft = '0';
+        el.style.color = 'hsl(var(--foreground))';
+        el.style.fontSize = baseFontSize;
+        // Remove margin-top from first ul
+        if (!el.previousElementSibling) {
+          el.style.marginTop = '0';
+        } else {
+          el.style.marginTop = '0.5em';
+        }
+        el.style.marginBottom = '0.5em';
+      }
+
+      if (tagName === 'ol') {
+        el.style.paddingLeft = '1em';
+        el.style.marginLeft = '0';
+        el.style.fontSize = baseFontSize;
         el.style.marginTop = '0.5em';
         el.style.marginBottom = '0.5em';
       }
@@ -452,12 +472,12 @@ function greet(name) {
       }
     });
 
-    // Wrap the content in a <section> tag (WeChat requirement, not <div>)
+    // Wrap the content in a <section> tag (公众号 requirement, not <div>)
     const wrapper = document.createElement('section');
+    wrapper.style.setProperty('--md-primary-color', primaryColor);
     wrapper.style.fontFamily = baseFontFamily;
     wrapper.style.fontSize = baseFontSize;
     wrapper.style.lineHeight = baseLineHeight;
-    wrapper.style.color = baseColor;
     wrapper.style.textAlign = 'left';
     wrapper.appendChild(temp);
 
