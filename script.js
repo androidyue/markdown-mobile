@@ -1,4 +1,8 @@
 (() => {
+  // Build ID for cache busting verification
+  const BUILD_ID = 'BUILD_20251029_172218';
+  console.log(`%c🚀 Markdown Studio ${BUILD_ID}`, 'color: #0969da; font-weight: bold; font-size: 14px;');
+
   const editor = document.getElementById('editor');
   const preview = document.getElementById('preview');
   const autosaveStatus = document.getElementById('autosave-status');
