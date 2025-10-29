@@ -452,7 +452,7 @@ function greet(name) {
       // Paragraphs (WeChat-specific formatting)
       if (tagName === 'p') {
         el.style.textAlign = 'justify'; // WeChat uses justify, not left
-        el.style.margin = '1.5em 8px'; // WeChat uses specific margin values
+        el.style.margin = '1.5em 0'; // Remove horizontal margins to align with headings
         el.style.letterSpacing = '0.1em'; // WeChat adds letter spacing
         el.style.fontSize = baseFontSize;
       }
