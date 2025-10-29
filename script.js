@@ -1,6 +1,6 @@
 (() => {
   // Build ID for cache busting verification
-  const BUILD_ID = 'BUILD_20251029_175434';
+  const BUILD_ID = 'BUILD_20251029_190612';
   console.log(`%c🚀 Markdown Studio ${BUILD_ID}`, 'color: #3b82f6; font-weight: bold; font-size: 14px;');
 
   const editor = document.getElementById('editor');
@@ -8,6 +8,7 @@
   const autosaveStatus = document.getElementById('autosave-status');
   const fileInput = document.getElementById('file-input');
   const syncCheckbox = document.getElementById('sync-scroll');
+  const pasteButton = document.getElementById('paste-button');
   const uploadButton = document.getElementById('upload-button');
   const clearButton = document.getElementById('clear-button');
   const copyPreviewButton = document.getElementById('copy-preview');
@@ -774,6 +775,33 @@ function greet(name) {
     }
     fileInput.value = '';
   });
+
+  if (pasteButton) {
+    pasteButton.addEventListener('click', async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          const start = editor.selectionStart;
+          const end = editor.selectionEnd;
+          const currentValue = editor.value;
+
+          // Insert text at cursor position
+          editor.value = currentValue.substring(0, start) + text + currentValue.substring(end);
+
+          // Move cursor to end of pasted text
+          const newCursorPos = start + text.length;
+          editor.setSelectionRange(newCursorPos, newCursorPos);
+
+          editor.dispatchEvent(new Event('input'));
+          editor.focus();
+          showSnackbar('Content pasted from clipboard');
+        }
+      } catch (error) {
+        console.error('Failed to read clipboard:', error);
+        showSnackbar('Failed to paste from clipboard. Please use Ctrl+V or Cmd+V.');
+      }
+    });
+  }
 
   if (uploadButton) {
     uploadButton.addEventListener('click', () => fileInput.click());
