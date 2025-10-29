@@ -313,10 +313,11 @@ function greet(name) {
     const temp = document.createElement('div');
     temp.innerHTML = htmlContent;
 
-    // Base font styling to apply consistently (following doocs/md approach)
-    const baseFontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif';
+    // Base font styling for WeChat compatibility (following doocs/md approach)
+    // CRITICAL: Use -apple-system-font (with hyphen at end) for WeChat
+    const baseFontFamily = '-apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif';
     const baseLineHeight = '1.75';
-    const baseFontSize = '16px';
+    const baseFontSize = '14px'; // WeChat uses 14px, not 16px
     const baseColor = '#24292f';
 
     // Add inline styles to ALL elements for better paste compatibility
@@ -372,10 +373,11 @@ function greet(name) {
         el.style.fontSize = '14px';
       }
 
-      // Paragraphs
+      // Paragraphs (WeChat-specific formatting)
       if (tagName === 'p') {
-        el.style.marginTop = '0.5em';
-        el.style.marginBottom = '0.5em';
+        el.style.textAlign = 'justify'; // WeChat uses justify, not left
+        el.style.margin = '1.5em 8px'; // WeChat uses specific margin values
+        el.style.letterSpacing = '0.1em'; // WeChat adds letter spacing
         el.style.fontSize = baseFontSize;
       }
 
@@ -429,16 +431,17 @@ function greet(name) {
       }
     });
 
-    // Wrap the content with base styling
-    const wrapper = document.createElement('div');
+    // Wrap the content in a <section> tag (WeChat requirement, not <div>)
+    const wrapper = document.createElement('section');
     wrapper.style.fontFamily = baseFontFamily;
     wrapper.style.fontSize = baseFontSize;
     wrapper.style.lineHeight = baseLineHeight;
     wrapper.style.color = baseColor;
+    wrapper.style.textAlign = 'left';
     wrapper.appendChild(temp);
 
     console.log('normalizeHtmlForCopy: HTML normalization complete');
-    return wrapper.innerHTML;
+    return wrapper.outerHTML; // Return the entire section including the tag
   }
 
   // Following doocs/md implementation for copying HTML with multi-format support
