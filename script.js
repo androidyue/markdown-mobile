@@ -301,6 +301,14 @@ function greet(name) {
     const plain = preview.innerText;
 
     try {
+      // Try selection-based copy first (best for formatting preservation)
+      if (copyWithSelection(preview)) {
+        setCopyFeedback({ title: 'Copied with formatting!', active: true });
+        showSnackbar('✓ Copied with formatting');
+        return;
+      }
+
+      // Try modern Clipboard API with both HTML and plain text
       if (navigator.clipboard?.write && typeof ClipboardItem !== 'undefined') {
         const blobHtml = new Blob([html], { type: 'text/html' });
         const blobText = new Blob([plain], { type: 'text/plain' });
@@ -315,19 +323,15 @@ function greet(name) {
         return;
       }
 
-      if (copyWithSelection(preview)) {
-        setCopyFeedback({ title: 'Copied with formatting!', active: true });
-        showSnackbar('✓ Copied with formatting');
-        return;
-      }
-
+      // Fallback to copying HTML as text
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(html);
-        setCopyFeedback({ title: 'Copied!', active: true });
-        showSnackbar('✓ Copied to clipboard');
+        setCopyFeedback({ title: 'Copied HTML!', active: true });
+        showSnackbar('✓ Copied HTML');
         return;
       }
 
+      // Final fallback to plain text
       if (copyPlainText(plain)) {
         setCopyFeedback({ title: 'Copied (plain text)', active: true });
         showSnackbar('✓ Copied as plain text');
