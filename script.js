@@ -490,12 +490,23 @@ function greet(name) {
         if (parentList && parentList.tagName === 'OL') {
           const firstChild = el.firstChild;
           // Check if number already exists
-          if (!firstChild || firstChild.nodeType !== Node.TEXT_NODE || !/^\d+\.\s/.test(firstChild.textContent)) {
+          const hasNumber = firstChild && firstChild.nodeType === Node.TEXT_NODE && /^\d+\.\s/.test(firstChild.textContent);
+          const firstElementChild = el.querySelector(':first-child');
+          const startsWithStrong = firstElementChild && (firstElementChild.tagName === 'STRONG' || firstElementChild.tagName === 'B');
+
+          if (!hasNumber) {
             // Find the index of this li in the ol
             const items = Array.from(parentList.children);
             const index = items.indexOf(el);
-            // Prepend number
-            el.insertBefore(document.createTextNode(`${index + 1}. `), el.firstChild);
+            const numberText = `${index + 1}. `;
+
+            // If first child is strong/b tag, prepend number inside it to prevent line break
+            if (startsWithStrong && firstChild === firstElementChild) {
+              firstElementChild.insertBefore(document.createTextNode(numberText), firstElementChild.firstChild);
+            } else {
+              // Otherwise prepend before first child
+              el.insertBefore(document.createTextNode(numberText), el.firstChild);
+            }
           }
         }
       }
