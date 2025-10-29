@@ -701,33 +701,23 @@ body.dark .preview-content :not(pre) > code {
   }
 }
 
-/* Onboarding Tour Customization */
-.driver-popover {
+/* Onboarding Tour Customization (Intro.js) */
+.introjs-tooltip {
   background: var(--panel-bg);
   color: var(--text);
   border-radius: 8px;
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border);
+  max-width: 400px;
 }
 
-.driver-popover-title {
-  font-size: 1rem;
-  font-weight: 600;
+.introjs-tooltiptext {
   color: var(--text);
-}
-
-.driver-popover-description {
-  color: var(--muted);
   font-size: 0.875rem;
   line-height: 1.6;
 }
 
-.driver-popover-footer {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.driver-popover-navigation-btns button {
+.introjs-button {
   background: var(--accent);
   color: white;
   border: none;
@@ -735,23 +725,40 @@ body.dark .preview-content :not(pre) > code {
   border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 500;
-  cursor: pointer;
+  text-shadow: none;
   transition: all var(--transition);
 }
 
-.driver-popover-navigation-btns button:hover {
+.introjs-button:hover {
   background: var(--accent-hover);
 }
 
-.driver-popover-close-btn {
-  color: var(--muted);
+.introjs-button:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: none;
 }
 
-.driver-popover-close-btn:hover {
+.introjs-skipbutton {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.introjs-skipbutton:hover {
   color: var(--text);
 }
 
-.driver-popover-progress-text {
-  color: var(--muted);
-  font-size: 0.75rem;
+.introjs-progress {
+  background: var(--border);
+}
+
+.introjs-progressbar {
+  background: var(--accent);
+}
+
+.introjs-helperLayer {
+  background: transparent;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
 }

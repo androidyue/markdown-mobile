@@ -18,13 +18,13 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="https://unpkg.com/driver.js@1.3.1/dist/driver.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.min.css" />
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div id="app" class="app">
     <main class="workspace">
-      <section class="editor-pane">
+      <section class="editor-pane" data-intro="This is your markdown editor. Type or paste your markdown content here. Changes are auto-saved to your browser." data-step="1">
         <header class="pane-header">
           <div class="pane-title">
             <button class="collapse-button" id="collapse-editor" type="button" aria-label="Toggle editor">
@@ -34,14 +34,14 @@
           </div>
           <div class="pane-actions">
             <span class="status" id="autosave-status">Saved</span>
-            <button class="button button-icon" id="paste-button" type="button" title="Paste from clipboard"><i class="fa-solid fa-paste"></i></button>
-            <button class="button button-icon" id="upload-button" type="button" title="Upload Markdown"><i class="fa-solid fa-file-arrow-up"></i></button>
-            <button class="button button-icon" id="clear-button" type="button" title="Clear"><i class="fa-solid fa-trash-can"></i></button>
+            <button class="button button-icon" id="paste-button" type="button" title="Paste from clipboard" data-intro="Click here to paste content from your clipboard directly into the editor. Great for mobile or quick pasting." data-step="2"><i class="fa-solid fa-paste"></i></button>
+            <button class="button button-icon" id="upload-button" type="button" title="Upload Markdown" data-intro="Upload existing markdown files (.md, .markdown, .txt) from your device. All processing happens locally in your browser." data-step="3"><i class="fa-solid fa-file-arrow-up"></i></button>
+            <button class="button button-icon" id="clear-button" type="button" title="Clear" data-intro="Clear all content from the editor to start fresh." data-step="4"><i class="fa-solid fa-trash-can"></i></button>
           </div>
         </header>
         <textarea id="editor" spellcheck="false"></textarea>
       </section>
-      <section class="preview-pane">
+      <section class="preview-pane" data-intro="See your markdown rendered in real-time as you type. The preview updates automatically with syntax highlighting for code blocks." data-step="5">
         <header class="pane-header">
           <div class="pane-title">
             <button class="collapse-button" id="collapse-preview" type="button" aria-label="Toggle preview">
@@ -56,7 +56,7 @@
             </label>
             <a href="https://lizhi.shop/products/typora?cid=wncr9wz5" target="_blank" rel="noopener noreferrer" class="button button-icon" title="Buy"><i class="fa-solid fa-cart-shopping"></i></a>
             <a href="https://github.com/androidyue/markdown-mobile/issues" target="_blank" rel="noopener noreferrer" class="button button-icon" title="Feedback"><i class="fa-solid fa-circle-question"></i></a>
-            <button class="button button-icon" id="copy-preview" type="button" title="Copy rendered HTML"><i class="fa-solid fa-copy"></i></button>
+            <button class="button button-icon" id="copy-preview" type="button" title="Copy rendered HTML" data-intro="Copy the formatted HTML with inline styles optimized for pasting into WeChat Official Account (公众号) editor. Formatting is preserved!" data-step="6"><i class="fa-solid fa-copy"></i></button>
           </div>
         </header>
         <article id="preview" class="preview-content"></article>
@@ -67,7 +67,7 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/marked@12.0.1/marked.min.js" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" referrerpolicy="no-referrer"></script>
-  <script src="https://unpkg.com/driver.js@1.3.1/dist/driver.js.iife.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
   <script src="script.js"></script>
   <script>
     window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };

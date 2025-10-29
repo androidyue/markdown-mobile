@@ -1,6 +1,6 @@
 (() => {
   // Build ID for cache busting verification
-  const BUILD_ID = 'BUILD_20251029_191626';
+  const BUILD_ID = 'BUILD_20251029_192106';
   console.log(`%c🚀 Markdown Studio ${BUILD_ID}`, 'color: #3b82f6; font-weight: bold; font-size: 14px;');
 
   const editor = document.getElementById('editor');
@@ -841,9 +841,9 @@ function greet(name) {
   function initOnboardingTour() {
     const TOUR_SEEN_KEY = 'markdown-studio-tour-seen';
 
-    // Check if Driver is available
-    if (typeof window.driver !== 'function') {
-      console.warn('Driver.js not loaded, skipping tour');
+    // Check if Intro.js is available
+    if (typeof window.introJs !== 'function') {
+      console.warn('Intro.js not loaded, skipping tour');
       return;
     }
 
@@ -852,72 +852,29 @@ function greet(name) {
       return;
     }
 
-    const driverObj = window.driver({
-      showProgress: true,
-      steps: [
-        {
-          element: '.editor-pane',
-          popover: {
-            title: 'Welcome to Markdown Studio! 👋',
-            description: 'This is your markdown editor. Type or paste your markdown content here. Changes are auto-saved to your browser.',
-            side: 'right',
-            align: 'start'
-          }
-        },
-        {
-          element: '#paste-button',
-          popover: {
-            title: 'Paste Content 📋',
-            description: 'Click here to paste content from your clipboard directly into the editor. Great for mobile or quick pasting.',
-            side: 'bottom',
-            align: 'start'
-          }
-        },
-        {
-          element: '#upload-button',
-          popover: {
-            title: 'Upload Markdown File 📄',
-            description: 'Upload existing markdown files (.md, .markdown, .txt) from your device. All processing happens locally in your browser.',
-            side: 'bottom',
-            align: 'start'
-          }
-        },
-        {
-          element: '#clear-button',
-          popover: {
-            title: 'Clear Editor 🗑️',
-            description: 'Clear all content from the editor to start fresh.',
-            side: 'bottom',
-            align: 'start'
-          }
-        },
-        {
-          element: '.preview-pane',
-          popover: {
-            title: 'Live Preview 👁️',
-            description: 'See your markdown rendered in real-time as you type. The preview updates automatically with syntax highlighting for code blocks.',
-            side: 'left',
-            align: 'start'
-          }
-        },
-        {
-          element: '#copy-preview',
-          popover: {
-            title: 'Copy for WeChat 公众号 ✨',
-            description: 'Copy the formatted HTML with inline styles optimized for pasting into WeChat Official Account (公众号) editor. Formatting is preserved!',
-            side: 'bottom',
-            align: 'end'
-          }
-        }
-      ],
-      onDestroyed: () => {
-        localStorage.setItem(TOUR_SEEN_KEY, 'true');
-      }
-    });
-
     // Start tour after a short delay to ensure everything is loaded
     setTimeout(() => {
-      driverObj.drive();
+      const intro = window.introJs();
+      intro.setOptions({
+        showProgress: true,
+        showBullets: false,
+        exitOnOverlayClick: false,
+        dontShowAgain: true,
+        dontShowAgainLabel: "Don't show again",
+        nextLabel: 'Next →',
+        prevLabel: '← Back',
+        doneLabel: 'Done ✓'
+      });
+
+      intro.oncomplete(() => {
+        localStorage.setItem(TOUR_SEEN_KEY, 'true');
+      });
+
+      intro.onexit(() => {
+        localStorage.setItem(TOUR_SEEN_KEY, 'true');
+      });
+
+      intro.start();
     }, 500);
   }
 
