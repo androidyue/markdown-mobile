@@ -300,17 +300,17 @@ function greet(name) {
     const html = preview.innerHTML;
     const plain = preview.textContent || preview.innerText;
 
-    try {
-      // Try selection-based copy first (best for formatting preservation)
-      if (copyWithSelection(preview)) {
-        setCopyFeedback({ title: 'Copied with formatting!', active: true });
-        showSnackbar('✓ Copied with formatting');
-        return;
-      }
+    // Create a styled HTML version for better compatibility
+    const styledHtml = `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica', 'Arial', sans-serif; font-size: 16px; line-height: 1.6; color: #24292f;">
+        ${html}
+      </div>
+    `;
 
-      // Try modern Clipboard API with both HTML and plain text
+    try {
+      // Try modern Clipboard API with both styled HTML and plain text
       if (navigator.clipboard?.write && typeof ClipboardItem !== 'undefined') {
-        const blobHtml = new Blob([html], { type: 'text/html' });
+        const blobHtml = new Blob([styledHtml], { type: 'text/html' });
         const blobText = new Blob([plain], { type: 'text/plain' });
         await navigator.clipboard.write([
           new ClipboardItem({
@@ -319,13 +319,20 @@ function greet(name) {
           })
         ]);
         setCopyFeedback({ title: 'Copied!', active: true });
-        showSnackbar('✓ Copied to clipboard');
+        showSnackbar('✓ Copied with formatting');
+        return;
+      }
+
+      // Try selection-based copy (best for formatting preservation in some apps)
+      if (copyWithSelection(preview)) {
+        setCopyFeedback({ title: 'Copied with formatting!', active: true });
+        showSnackbar('✓ Copied with formatting');
         return;
       }
 
       // Fallback to copying HTML as text
       if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(html);
+        await navigator.clipboard.writeText(styledHtml);
         setCopyFeedback({ title: 'Copied HTML!', active: true });
         showSnackbar('✓ Copied HTML');
         return;
