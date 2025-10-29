@@ -410,12 +410,12 @@ function greet(name) {
         el.style.color = baseColor;
       }
 
-      // List items
+      // List items (WeChat-specific formatting - CRITICAL)
       if (tagName === 'li') {
-        el.style.marginTop = '0.2em';
-        el.style.marginBottom = '0.2em';
-        el.style.fontSize = baseFontSize;
+        el.style.textIndent = '-1em'; // CRITICAL: Prevents text wrapping issues
         el.style.display = 'block';
+        el.style.margin = '0.2em 8px';
+        el.style.fontSize = baseFontSize;
       }
 
       // Lists
