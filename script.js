@@ -406,6 +406,47 @@ function greet(name) {
         el.style.borderRadius = '6px';
         el.style.overflow = 'auto';
         el.style.fontSize = '14px';
+
+        // Convert highlight.js classes to inline styles for 公众号
+        const codeElements = el.querySelectorAll('[class*="hljs"]');
+        codeElements.forEach(codeEl => {
+          const classes = codeEl.className;
+
+          // Keywords (if, else, function, const, let, var, etc.)
+          if (classes.includes('hljs-keyword') || classes.includes('hljs-built_in')) {
+            codeEl.style.color = '#ff7b72';
+            codeEl.style.fontWeight = 'bold';
+          }
+          // Strings
+          else if (classes.includes('hljs-string') || classes.includes('hljs-template-tag')) {
+            codeEl.style.color = '#a5d6ff';
+          }
+          // Numbers
+          else if (classes.includes('hljs-number') || classes.includes('hljs-literal')) {
+            codeEl.style.color = '#79c0ff';
+          }
+          // Comments
+          else if (classes.includes('hljs-comment')) {
+            codeEl.style.color = '#8b949e';
+            codeEl.style.fontStyle = 'italic';
+          }
+          // Functions
+          else if (classes.includes('hljs-title') || classes.includes('hljs-function')) {
+            codeEl.style.color = '#d2a8ff';
+          }
+          // Variables
+          else if (classes.includes('hljs-variable') || classes.includes('hljs-property')) {
+            codeEl.style.color = '#ffa657';
+          }
+          // Attributes
+          else if (classes.includes('hljs-attr') || classes.includes('hljs-attribute')) {
+            codeEl.style.color = '#79c0ff';
+          }
+          // Punctuation/operators
+          else if (classes.includes('hljs-punctuation') || classes.includes('hljs-operator')) {
+            codeEl.style.color = '#c9d1d9';
+          }
+        });
       }
 
       // Paragraphs (WeChat-specific formatting)
