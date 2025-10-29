@@ -92,7 +92,13 @@ function greet(name) {
       preview.innerHTML = '<div class="empty-state">Start by typing your Markdown on the left panel.</div>';
       return;
     }
-    preview.innerHTML = marked.parse(value);
+    
+    // Strip YAML front matter (metadata between --- delimiters)
+    let content = value;
+    const frontMatterRegex = /^---\s*\n[\s\S]*?\n---\s*\n/;
+    content = content.replace(frontMatterRegex, '');
+    
+    preview.innerHTML = marked.parse(content);
   }
 
   let saveTimeout;
