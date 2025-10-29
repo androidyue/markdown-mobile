@@ -313,52 +313,119 @@ function greet(name) {
     const temp = document.createElement('div');
     temp.innerHTML = htmlContent;
 
-    // Base font styling to apply consistently
+    // Base font styling to apply consistently (following doocs/md approach)
     const baseFontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif';
     const baseLineHeight = '1.75';
     const baseFontSize = '16px';
+    const baseColor = '#24292f';
 
-    // Add inline styles to all elements for better paste compatibility
+    // Add inline styles to ALL elements for better paste compatibility
     const allElements = temp.querySelectorAll('*');
     console.log(`normalizeHtmlForCopy: Found ${allElements.length} elements to normalize`);
 
     allElements.forEach(el => {
       const tagName = el.tagName.toLowerCase();
 
-      // Add base font family and line height to all elements
+      // Add base styles to EVERY element (critical for cross-app compatibility)
       el.style.fontFamily = baseFontFamily;
       el.style.lineHeight = baseLineHeight;
+      el.style.textAlign = 'left';
 
-      // Handle inline elements specifically
+      // Handle inline elements (must use font-size: inherit)
       if (['strong', 'em', 'code', 'a', 'span', 'b', 'i'].includes(tagName)) {
         el.style.fontSize = 'inherit';
-        // Use inline-block to prevent unwanted line breaks
         el.style.display = 'inline';
       }
 
-      // Ensure strong tags have proper font weight
+      // Strong/bold tags
       if (tagName === 'strong' || tagName === 'b') {
         el.style.fontWeight = 'bold';
+        el.style.color = baseColor;
       }
 
-      // Ensure code elements maintain their monospace font
+      // Emphasis/italic tags
+      if (tagName === 'em' || tagName === 'i') {
+        el.style.fontStyle = 'italic';
+      }
+
+      // Code elements (inline code)
       if (tagName === 'code') {
-        el.style.fontFamily = 'Consolas, Monaco, "Courier New", monospace';
-        el.style.backgroundColor = 'rgba(175, 184, 193, 0.2)';
-        el.style.padding = '0.2em 0.4em';
-        el.style.borderRadius = '3px';
+        const isInPre = el.closest('pre');
+        if (!isInPre) {
+          // Inline code
+          el.style.fontFamily = 'Consolas, Monaco, "Courier New", monospace';
+          el.style.fontSize = '90%';
+          el.style.color = '#d14';
+          el.style.backgroundColor = 'rgba(27,31,35,0.05)';
+          el.style.padding = '3px 5px';
+          el.style.borderRadius = '4px';
+        }
       }
 
-      // Handle paragraphs and headings
+      // Pre/code blocks
+      if (tagName === 'pre') {
+        el.style.backgroundColor = '#22272e';
+        el.style.color = '#e6edf3';
+        el.style.padding = '16px';
+        el.style.borderRadius = '6px';
+        el.style.overflow = 'auto';
+        el.style.fontSize = '14px';
+      }
+
+      // Paragraphs
       if (tagName === 'p') {
         el.style.marginTop = '0.5em';
         el.style.marginBottom = '0.5em';
+        el.style.fontSize = baseFontSize;
       }
 
+      // Headings
       if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tagName)) {
         el.style.marginTop = '1em';
         el.style.marginBottom = '0.5em';
         el.style.fontWeight = 'bold';
+        el.style.color = baseColor;
+      }
+
+      // List items
+      if (tagName === 'li') {
+        el.style.marginTop = '0.2em';
+        el.style.marginBottom = '0.2em';
+        el.style.fontSize = baseFontSize;
+        el.style.display = 'block';
+      }
+
+      // Lists
+      if (tagName === 'ul' || tagName === 'ol') {
+        el.style.paddingLeft = '2em';
+        el.style.marginTop = '0.5em';
+        el.style.marginBottom = '0.5em';
+      }
+
+      // Blockquotes
+      if (tagName === 'blockquote') {
+        el.style.borderLeft = '4px solid #dfe2e5';
+        el.style.paddingLeft = '1em';
+        el.style.marginLeft = '0';
+        el.style.color = '#6a737d';
+      }
+
+      // Tables
+      if (tagName === 'table') {
+        el.style.borderCollapse = 'collapse';
+        el.style.width = '100%';
+        el.style.marginTop = '1em';
+        el.style.marginBottom = '1em';
+      }
+
+      if (tagName === 'th' || tagName === 'td') {
+        el.style.border = '1px solid #dfe2e5';
+        el.style.padding = '6px 13px';
+      }
+
+      if (tagName === 'th') {
+        el.style.fontWeight = 'bold';
+        el.style.backgroundColor = '#f6f8fa';
       }
     });
 
@@ -367,83 +434,73 @@ function greet(name) {
     wrapper.style.fontFamily = baseFontFamily;
     wrapper.style.fontSize = baseFontSize;
     wrapper.style.lineHeight = baseLineHeight;
-    wrapper.style.color = '#24292f';
+    wrapper.style.color = baseColor;
     wrapper.appendChild(temp);
 
     console.log('normalizeHtmlForCopy: HTML normalization complete');
     return wrapper.innerHTML;
   }
 
+  // Following doocs/md implementation for copying HTML with multi-format support
   async function copyPreview() {
     console.log('copyPreview: Starting copy operation');
     if (!copyPreviewButton) return;
+
     const html = preview.innerHTML;
     const plain = preview.textContent || preview.innerText;
+    const normalizedHtml = normalizeHtmlForCopy(html);
 
     try {
-      // Try modern Clipboard API with both formatted HTML and plain text
-      if (navigator.clipboard?.write && typeof ClipboardItem !== 'undefined') {
-        console.log('copyPreview: Using modern Clipboard API');
-        const normalizedHtml = normalizeHtmlForCopy(html);
-        const blobHtml = new Blob([normalizedHtml], { type: 'text/html' });
-        const blobText = new Blob([plain], { type: 'text/plain' });
-        await navigator.clipboard.write([
-          new ClipboardItem({
-            'text/html': blobHtml,
-            'text/plain': blobText
-          })
-        ]);
+      // Try modern Clipboard API with ClipboardItem (doocs/md approach)
+      if (window.isSecureContext && navigator.clipboard?.write && typeof ClipboardItem !== 'undefined') {
+        console.log('copyPreview: Using modern Clipboard API with ClipboardItem');
+
+        const item = new ClipboardItem({
+          'text/html': new Blob([normalizedHtml], { type: 'text/html' }),
+          'text/plain': new Blob([plain], { type: 'text/plain' })
+        });
+
+        await navigator.clipboard.write([item]);
         console.log('copyPreview: Modern Clipboard API succeeded');
         setCopyFeedback({ title: 'Copied!', active: true });
         showSnackbar('✓ Copied with formatting');
         return;
       }
 
-      // Try selection-based copy as fallback
-      console.log('copyPreview: Trying selection-based copy');
-      if (copyWithSelection(preview)) {
-        console.log('copyPreview: Selection-based copy succeeded');
-        setCopyFeedback({ title: 'Copied with formatting!', active: true });
-        showSnackbar('✓ Copied with formatting');
-        return;
-      }
-
-      // Fallback to copying HTML as text
-      console.log('copyPreview: Trying clipboard.writeText with HTML');
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(html);
+      // Fallback to writeText if Clipboard API with items not available
+      console.log('copyPreview: Falling back to clipboard.writeText');
+      if (window.isSecureContext && navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(plain);
         console.log('copyPreview: clipboard.writeText succeeded');
-        setCopyFeedback({ title: 'Copied HTML!', active: true });
-        showSnackbar('✓ Copied HTML');
+        setCopyFeedback({ title: 'Copied!', active: true });
+        showSnackbar('✓ Copied to clipboard');
         return;
       }
 
-      // Final fallback to plain text
-      console.log('copyPreview: Trying plain text copy');
+      // Legacy fallback using document.execCommand
+      console.log('copyPreview: Trying legacy copy method');
       if (copyPlainText(plain)) {
-        console.log('copyPreview: Plain text copy succeeded');
-        setCopyFeedback({ title: 'Copied (plain text)', active: true });
-        showSnackbar('✓ Copied as plain text');
+        console.log('copyPreview: Legacy copy succeeded');
+        setCopyFeedback({ title: 'Copied!', active: true });
+        showSnackbar('✓ Copied to clipboard');
         return;
       }
 
       throw new Error('Clipboard API not supported');
     } catch (err) {
       console.warn('copyPreview: Copy failed with error', err);
-      console.log('copyPreview: Trying error fallback with selection');
-      if (copyWithSelection(preview)) {
-        console.log('copyPreview: Error fallback selection succeeded');
-        setCopyFeedback({ title: 'Copied with formatting!', active: true });
-        showSnackbar('✓ Copied with formatting');
-        return;
-      }
 
-      console.log('copyPreview: Trying error fallback with plain text');
-      if (copyPlainText(plain)) {
-        console.log('copyPreview: Error fallback plain text succeeded');
-        setCopyFeedback({ title: 'Copied (plain text)', active: true });
-        showSnackbar('✓ Copied as plain text');
-        return;
+      // Final fallback attempt
+      console.log('copyPreview: Trying final fallback');
+      try {
+        if (copyPlainText(plain)) {
+          console.log('copyPreview: Final fallback succeeded');
+          setCopyFeedback({ title: 'Copied!', active: true });
+          showSnackbar('✓ Copied to clipboard');
+          return;
+        }
+      } catch (fallbackErr) {
+        console.error('copyPreview: Final fallback failed', fallbackErr);
       }
 
       console.error('copyPreview: All copy methods failed');
