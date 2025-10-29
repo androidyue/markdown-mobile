@@ -1,0 +1,21 @@
+{
+  "name": "Markdown Studio",
+  "short_name": "MD Studio",
+  "description": "A clean, simple markdown editor with live preview",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafbfc",
+  "theme_color": "#0969da",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
