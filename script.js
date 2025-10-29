@@ -350,10 +350,10 @@ function greet(name) {
       const tagName = el.tagName.toLowerCase();
 
       // Add base styles to EVERY element (critical for 公众号 compatibility)
-      el.style.setProperty('--md-primary-color', primaryColor);
       el.style.fontFamily = baseFontFamily;
       el.style.lineHeight = baseLineHeight;
       el.style.textAlign = 'left';
+      el.style.fontSize = baseFontSize;
 
       // Handle inline elements (must use font-size: inherit)
       if (['strong', 'em', 'code', 'a', 'span', 'b', 'i'].includes(tagName)) {
@@ -361,10 +361,10 @@ function greet(name) {
         el.style.display = 'inline';
       }
 
-      // Strong/bold tags (use CSS variable for color - 公众号 requirement)
+      // Strong/bold tags (use actual color, not CSS variable)
       if (tagName === 'strong' || tagName === 'b') {
         el.style.fontWeight = 'bold';
-        el.style.color = 'var(--md-primary-color)';
+        el.style.color = primaryColor; // Use actual color value
       }
 
       // Emphasis/italic tags
@@ -417,8 +417,7 @@ function greet(name) {
         el.style.textIndent = '-1em'; // CRITICAL: Prevents text wrapping issues
         el.style.display = 'block';
         el.style.margin = '0.2em 8px';
-        el.style.fontSize = baseFontSize;
-        el.style.color = 'hsl(var(--foreground))';
+        el.style.color = baseColor;
       }
 
       // Lists (公众号-specific formatting)
@@ -426,8 +425,7 @@ function greet(name) {
         el.style.listStyle = 'circle';
         el.style.paddingLeft = '1em'; // doocs/md uses 1em, not 2em
         el.style.marginLeft = '0';
-        el.style.color = 'hsl(var(--foreground))';
-        el.style.fontSize = baseFontSize;
+        el.style.color = baseColor;
         // Remove margin-top from first ul
         if (!el.previousElementSibling) {
           el.style.marginTop = '0';
@@ -474,7 +472,6 @@ function greet(name) {
 
     // Wrap the content in a <section> tag (公众号 requirement, not <div>)
     const wrapper = document.createElement('section');
-    wrapper.style.setProperty('--md-primary-color', primaryColor);
     wrapper.style.fontFamily = baseFontFamily;
     wrapper.style.fontSize = baseFontSize;
     wrapper.style.lineHeight = baseLineHeight;
