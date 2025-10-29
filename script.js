@@ -1,6 +1,6 @@
 (() => {
   // Build ID for cache busting verification
-  const BUILD_ID = 'BUILD_20251029_191136';
+  const BUILD_ID = 'BUILD_20251029_191626';
   console.log(`%c🚀 Markdown Studio ${BUILD_ID}`, 'color: #3b82f6; font-weight: bold; font-size: 14px;');
 
   const editor = document.getElementById('editor');
@@ -841,7 +841,14 @@ function greet(name) {
   function initOnboardingTour() {
     const TOUR_SEEN_KEY = 'markdown-studio-tour-seen';
 
-    if (!window.driver || localStorage.getItem(TOUR_SEEN_KEY)) {
+    // Check if Driver is available
+    if (typeof window.driver !== 'function') {
+      console.warn('Driver.js not loaded, skipping tour');
+      return;
+    }
+
+    // Check if tour was already seen
+    if (localStorage.getItem(TOUR_SEEN_KEY)) {
       return;
     }
 
