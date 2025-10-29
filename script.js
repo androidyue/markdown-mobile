@@ -432,11 +432,22 @@ function greet(name) {
         el.style.color = baseColor;
         el.style.whiteSpace = 'normal'; // Allow wrapping but keep inline elements together
         el.style.wordBreak = 'normal'; // Don't break words
+
+        // Add bullet character if parent is UL (公众号 doesn't render CSS list-style properly)
+        const parentList = el.parentElement;
+        if (parentList && parentList.tagName === 'UL') {
+          // Check if bullet already exists
+          const firstChild = el.firstChild;
+          if (!firstChild || firstChild.nodeType !== Node.TEXT_NODE || !firstChild.textContent.startsWith('•')) {
+            // Prepend bullet character
+            el.insertBefore(document.createTextNode('• '), el.firstChild);
+          }
+        }
       }
 
       // Lists (公众号-specific formatting)
       if (tagName === 'ul') {
-        el.style.listStyle = 'circle';
+        el.style.listStyle = 'none'; // We add bullets manually as text
         el.style.paddingLeft = '1em'; // doocs/md uses 1em, not 2em
         el.style.marginLeft = '0';
         el.style.color = baseColor;
