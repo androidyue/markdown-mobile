@@ -309,9 +309,30 @@ function greet(name) {
 
   function normalizeHtmlForCopy(htmlContent) {
     console.log('normalizeHtmlForCopy: Starting HTML normalization');
+
     // Create a temporary div to manipulate the HTML
     const temp = document.createElement('div');
     temp.innerHTML = htmlContent;
+
+    // CRITICAL: Normalize text nodes to remove extra whitespace between inline elements
+    // This prevents **Bold**: from breaking across lines in WeChat
+    function normalizeWhitespace(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        // Only normalize text nodes that are direct children of inline containers
+        const parent = node.parentElement;
+        if (parent && ['P', 'LI', 'TD', 'TH', 'BLOCKQUOTE'].includes(parent.tagName)) {
+          // Replace multiple spaces with single space, but preserve single spaces
+          node.textContent = node.textContent.replace(/\s+/g, ' ');
+        }
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        // Don't normalize whitespace in code blocks
+        if (node.tagName !== 'PRE' && node.tagName !== 'CODE') {
+          Array.from(node.childNodes).forEach(child => normalizeWhitespace(child));
+        }
+      }
+    }
+
+    normalizeWhitespace(temp);
 
     // Base font styling for WeChat compatibility (following doocs/md approach)
     // CRITICAL: Use -apple-system-font (with hyphen at end) for WeChat
