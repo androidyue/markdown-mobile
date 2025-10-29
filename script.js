@@ -8,6 +8,10 @@
   const clearButton = document.getElementById('clear-button');
   const copyPreviewButton = document.getElementById('copy-preview');
   const snackbar = document.getElementById('snackbar');
+  const collapseEditorButton = document.getElementById('collapse-editor');
+  const collapsePreviewButton = document.getElementById('collapse-preview');
+  const editorPane = document.querySelector('.editor-pane');
+  const previewPane = document.querySelector('.preview-pane');
 
   const STORAGE_KEY = 'markdown-studio-content';
   const THEME_KEY = 'markdown-studio-theme';
@@ -463,6 +467,18 @@ function greet(name) {
       syncPreviewScroll();
     }
   });
+
+  if (collapseEditorButton && editorPane) {
+    collapseEditorButton.addEventListener('click', () => {
+      editorPane.classList.toggle('collapsed');
+    });
+  }
+
+  if (collapsePreviewButton && previewPane) {
+    collapsePreviewButton.addEventListener('click', () => {
+      previewPane.classList.toggle('collapsed');
+    });
+  }
 
   loadTheme();
   loadContent();

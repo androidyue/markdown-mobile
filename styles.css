@@ -79,6 +79,44 @@ body {
   font-size: 0.95rem;
 }
 
+.pane-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.collapse-button {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all var(--transition);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.collapse-button:hover,
+.collapse-button:focus-visible {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.collapse-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.collapse-button i {
+  transition: transform var(--transition);
+  pointer-events: none;
+}
+
 .pane-actions {
   display: flex;
   align-items: center;
@@ -391,6 +429,27 @@ body.dark .preview-content :not(pre) > code {
   .preview-pane {
     height: 50vh;
     min-height: 300px;
+    transition: height 0.3s ease, min-height 0.3s ease;
+  }
+
+  .collapse-button {
+    display: inline-flex;
+  }
+
+  .editor-pane.collapsed,
+  .preview-pane.collapsed {
+    height: auto;
+    min-height: auto;
+  }
+
+  .editor-pane.collapsed .collapse-button i,
+  .preview-pane.collapsed .collapse-button i {
+    transform: rotate(-90deg);
+  }
+
+  .editor-pane.collapsed textarea,
+  .preview-pane.collapsed .preview-content {
+    display: none;
   }
 }
 

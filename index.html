@@ -16,7 +16,12 @@
     <main class="workspace">
       <section class="editor-pane">
         <header class="pane-header">
-          <span>Markdown</span>
+          <div class="pane-title">
+            <button class="collapse-button" id="collapse-editor" type="button" aria-label="Toggle editor">
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <span>Markdown</span>
+          </div>
           <div class="pane-actions">
             <span class="status" id="autosave-status">Saved</span>
             <button class="button" id="clear-button" type="button">Clear</button>
@@ -27,7 +32,12 @@
       </section>
       <section class="preview-pane">
         <header class="pane-header">
-          <span>Preview</span>
+          <div class="pane-title">
+            <button class="collapse-button" id="collapse-preview" type="button" aria-label="Toggle preview">
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <span>Preview</span>
+          </div>
           <div class="preview-actions">
             <label class="toggle" title="Sync Scroll">
               <input type="checkbox" id="sync-scroll" checked>
