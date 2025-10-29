@@ -295,22 +295,38 @@ function greet(name) {
     return successful;
   }
 
+  function normalizeHtmlForCopy(htmlContent) {
+    // Create a temporary div to manipulate the HTML
+    const temp = document.createElement('div');
+    temp.innerHTML = htmlContent;
+
+    // Add white-space: nowrap to all inline elements to prevent line breaks
+    const inlineElements = temp.querySelectorAll('strong, em, code, a, span');
+    inlineElements.forEach(el => {
+      el.style.whiteSpace = 'nowrap';
+    });
+
+    // Wrap the content with base styling
+    const wrapper = document.createElement('div');
+    wrapper.style.fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif';
+    wrapper.style.fontSize = '16px';
+    wrapper.style.lineHeight = '1.6';
+    wrapper.style.color = '#24292f';
+    wrapper.appendChild(temp);
+
+    return wrapper.innerHTML;
+  }
+
   async function copyPreview() {
     if (!copyPreviewButton) return;
     const html = preview.innerHTML;
     const plain = preview.textContent || preview.innerText;
 
     try {
-      // Try selection-based copy first (best for formatting preservation)
-      if (copyWithSelection(preview)) {
-        setCopyFeedback({ title: 'Copied with formatting!', active: true });
-        showSnackbar('✓ Copied with formatting');
-        return;
-      }
-
-      // Try modern Clipboard API with both HTML and plain text
+      // Try modern Clipboard API with both formatted HTML and plain text
       if (navigator.clipboard?.write && typeof ClipboardItem !== 'undefined') {
-        const blobHtml = new Blob([html], { type: 'text/html' });
+        const normalizedHtml = normalizeHtmlForCopy(html);
+        const blobHtml = new Blob([normalizedHtml], { type: 'text/html' });
         const blobText = new Blob([plain], { type: 'text/plain' });
         await navigator.clipboard.write([
           new ClipboardItem({
@@ -319,7 +335,14 @@ function greet(name) {
           })
         ]);
         setCopyFeedback({ title: 'Copied!', active: true });
-        showSnackbar('✓ Copied to clipboard');
+        showSnackbar('✓ Copied with formatting');
+        return;
+      }
+
+      // Try selection-based copy as fallback
+      if (copyWithSelection(preview)) {
+        setCopyFeedback({ title: 'Copied with formatting!', active: true });
+        showSnackbar('✓ Copied with formatting');
         return;
       }
 
