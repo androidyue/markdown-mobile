@@ -365,6 +365,18 @@ function greet(name) {
       if (tagName === 'strong' || tagName === 'b') {
         el.style.fontWeight = 'bold';
         el.style.color = primaryColor; // Use actual color value
+
+        // CRITICAL: Append following punctuation into the strong tag to prevent line breaks
+        const nextNode = el.nextSibling;
+        if (nextNode && nextNode.nodeType === Node.TEXT_NODE) {
+          const text = nextNode.textContent;
+          // If text starts with punctuation, move it inside strong tag
+          const punctuationMatch = text.match(/^[:：,，.。;；!！?？]/);
+          if (punctuationMatch) {
+            el.textContent += punctuationMatch[0];
+            nextNode.textContent = text.substring(punctuationMatch[0].length);
+          }
+        }
       }
 
       // Emphasis/italic tags
@@ -418,6 +430,8 @@ function greet(name) {
         el.style.display = 'block';
         el.style.margin = '0.2em 8px';
         el.style.color = baseColor;
+        el.style.whiteSpace = 'normal'; // Allow wrapping but keep inline elements together
+        el.style.wordBreak = 'normal'; // Don't break words
       }
 
       // Lists (公众号-specific formatting)
