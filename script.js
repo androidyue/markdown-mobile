@@ -472,7 +472,15 @@ function greet(name) {
 
     const html = preview.innerHTML;
     const plain = preview.textContent || preview.innerText;
+
+    // DEBUG: Log the HTML before and after normalization
+    console.log('=== ORIGINAL HTML (first 500 chars) ===');
+    console.log(html.substring(0, 500));
+
     const normalizedHtml = normalizeHtmlForCopy(html);
+
+    console.log('=== NORMALIZED HTML (first 500 chars) ===');
+    console.log(normalizedHtml.substring(0, 500));
 
     try {
       // Try modern Clipboard API with ClipboardItem (doocs/md approach)
