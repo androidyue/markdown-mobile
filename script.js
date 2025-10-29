@@ -5,6 +5,7 @@
   const fileInput = document.getElementById('file-input');
   const syncCheckbox = document.getElementById('sync-scroll');
   const uploadButton = document.getElementById('upload-button');
+  const clearButton = document.getElementById('clear-button');
   const copyPreviewButton = document.getElementById('copy-preview');
 
   const STORAGE_KEY = 'markdown-studio-content';
@@ -424,6 +425,14 @@ function greet(name) {
 
   if (uploadButton) {
     uploadButton.addEventListener('click', () => fileInput.click());
+  }
+
+  if (clearButton) {
+    clearButton.addEventListener('click', () => {
+      editor.value = '';
+      render(editor.value);
+      scheduleSave();
+    });
   }
 
   if (copyPreviewButton) {
