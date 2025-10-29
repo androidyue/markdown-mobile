@@ -1,6 +1,6 @@
 (() => {
   // Build ID for cache busting verification
-  const BUILD_ID = 'BUILD_20251029_172218';
+  const BUILD_ID = 'BUILD_20251029_172408';
   console.log(`%c🚀 Markdown Studio ${BUILD_ID}`, 'color: #0969da; font-weight: bold; font-size: 14px;');
 
   const editor = document.getElementById('editor');
@@ -492,23 +492,32 @@ function greet(name) {
 
         // Add number if parent is OL (公众号 doesn't render CSS list-style-type properly)
         if (parentList && parentList.tagName === 'OL') {
+          // Find the index of this li in the ol
+          const items = Array.from(parentList.children);
+          const index = items.indexOf(el);
+          const numberText = `${index + 1}. `;
+
+          // Find first element child (skip text nodes)
+          let firstElementChild = null;
+          for (let child of el.childNodes) {
+            if (child.nodeType === Node.ELEMENT_NODE) {
+              firstElementChild = child;
+              break;
+            }
+          }
+
+          // Check if we already added the number
           const firstChild = el.firstChild;
-          // Check if number already exists
           const hasNumber = firstChild && firstChild.nodeType === Node.TEXT_NODE && /^\d+\.\s/.test(firstChild.textContent);
-          const firstElementChild = el.querySelector(':first-child');
-          const startsWithStrong = firstElementChild && (firstElementChild.tagName === 'STRONG' || firstElementChild.tagName === 'B');
 
           if (!hasNumber) {
-            // Find the index of this li in the ol
-            const items = Array.from(parentList.children);
-            const index = items.indexOf(el);
-            const numberText = `${index + 1}. `;
-
-            // If first child is strong/b tag, prepend number inside it to prevent line break
-            if (startsWithStrong && firstChild === firstElementChild) {
+            // If the first element child is strong/b, insert number inside it to prevent line break
+            if (firstElementChild && (firstElementChild.tagName === 'STRONG' || firstElementChild.tagName === 'B')) {
+              console.log('OL: Inserting number inside strong tag:', numberText, firstElementChild.textContent);
               firstElementChild.insertBefore(document.createTextNode(numberText), firstElementChild.firstChild);
             } else {
               // Otherwise prepend before first child
+              console.log('OL: Inserting number before first child:', numberText);
               el.insertBefore(document.createTextNode(numberText), el.firstChild);
             }
           }
