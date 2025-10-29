@@ -7,6 +7,7 @@
   const uploadButton = document.getElementById('upload-button');
   const clearButton = document.getElementById('clear-button');
   const copyPreviewButton = document.getElementById('copy-preview');
+  const snackbar = document.getElementById('snackbar');
 
   const STORAGE_KEY = 'markdown-studio-content';
   const THEME_KEY = 'markdown-studio-theme';
@@ -214,6 +215,17 @@ function greet(name) {
   }
 
   let copyFeedbackTimer;
+  let snackbarTimer;
+
+  function showSnackbar(message) {
+    if (!snackbar) return;
+    snackbar.textContent = message;
+    snackbar.classList.add('show');
+    clearTimeout(snackbarTimer);
+    snackbarTimer = setTimeout(() => {
+      snackbar.classList.remove('show');
+    }, 2000);
+  }
 
   function setCopyFeedback({ title, active, delay = COPY_RESET_DELAY }) {
     if (!copyPreviewButton) return;
@@ -289,22 +301,26 @@ function greet(name) {
           })
         ]);
         setCopyFeedback({ title: 'Copied!', active: true });
+        showSnackbar('✓ Copied to clipboard');
         return;
       }
 
       if (copyWithSelection(preview)) {
         setCopyFeedback({ title: 'Copied with formatting!', active: true });
+        showSnackbar('✓ Copied with formatting');
         return;
       }
 
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(html);
         setCopyFeedback({ title: 'Copied!', active: true });
+        showSnackbar('✓ Copied to clipboard');
         return;
       }
 
       if (copyPlainText(plain)) {
         setCopyFeedback({ title: 'Copied (plain text)', active: true });
+        showSnackbar('✓ Copied as plain text');
         return;
       }
 
@@ -313,15 +329,18 @@ function greet(name) {
       console.warn('Copy failed', err);
       if (copyWithSelection(preview)) {
         setCopyFeedback({ title: 'Copied with formatting!', active: true });
+        showSnackbar('✓ Copied with formatting');
         return;
       }
 
       if (copyPlainText(plain)) {
         setCopyFeedback({ title: 'Copied (plain text)', active: true });
+        showSnackbar('✓ Copied as plain text');
         return;
       }
 
       setCopyFeedback({ title: 'Copy failed', active: false, delay: 2000 });
+      showSnackbar('✗ Copy failed');
     }
   }
 
