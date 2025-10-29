@@ -700,3 +700,58 @@ body.dark .preview-content :not(pre) > code {
     font-size: 0.85rem;
   }
 }
+
+/* Onboarding Tour Customization */
+.driver-popover {
+  background: var(--panel-bg);
+  color: var(--text);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+}
+
+.driver-popover-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.driver-popover-description {
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.driver-popover-footer {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.driver-popover-navigation-btns button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.driver-popover-navigation-btns button:hover {
+  background: var(--accent-hover);
+}
+
+.driver-popover-close-btn {
+  color: var(--muted);
+}
+
+.driver-popover-close-btn:hover {
+  color: var(--text);
+}
+
+.driver-popover-progress-text {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
