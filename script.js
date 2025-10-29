@@ -313,18 +313,60 @@ function greet(name) {
     const temp = document.createElement('div');
     temp.innerHTML = htmlContent;
 
-    // Add white-space: nowrap to all inline elements to prevent line breaks
-    const inlineElements = temp.querySelectorAll('strong, em, code, a, span');
-    console.log(`normalizeHtmlForCopy: Found ${inlineElements.length} inline elements to normalize`);
-    inlineElements.forEach(el => {
-      el.style.whiteSpace = 'nowrap';
+    // Base font styling to apply consistently
+    const baseFontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif';
+    const baseLineHeight = '1.75';
+    const baseFontSize = '16px';
+
+    // Add inline styles to all elements for better paste compatibility
+    const allElements = temp.querySelectorAll('*');
+    console.log(`normalizeHtmlForCopy: Found ${allElements.length} elements to normalize`);
+
+    allElements.forEach(el => {
+      const tagName = el.tagName.toLowerCase();
+
+      // Add base font family and line height to all elements
+      el.style.fontFamily = baseFontFamily;
+      el.style.lineHeight = baseLineHeight;
+
+      // Handle inline elements specifically
+      if (['strong', 'em', 'code', 'a', 'span', 'b', 'i'].includes(tagName)) {
+        el.style.fontSize = 'inherit';
+        // Use inline-block to prevent unwanted line breaks
+        el.style.display = 'inline';
+      }
+
+      // Ensure strong tags have proper font weight
+      if (tagName === 'strong' || tagName === 'b') {
+        el.style.fontWeight = 'bold';
+      }
+
+      // Ensure code elements maintain their monospace font
+      if (tagName === 'code') {
+        el.style.fontFamily = 'Consolas, Monaco, "Courier New", monospace';
+        el.style.backgroundColor = 'rgba(175, 184, 193, 0.2)';
+        el.style.padding = '0.2em 0.4em';
+        el.style.borderRadius = '3px';
+      }
+
+      // Handle paragraphs and headings
+      if (tagName === 'p') {
+        el.style.marginTop = '0.5em';
+        el.style.marginBottom = '0.5em';
+      }
+
+      if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tagName)) {
+        el.style.marginTop = '1em';
+        el.style.marginBottom = '0.5em';
+        el.style.fontWeight = 'bold';
+      }
     });
 
     // Wrap the content with base styling
     const wrapper = document.createElement('div');
-    wrapper.style.fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif';
-    wrapper.style.fontSize = '16px';
-    wrapper.style.lineHeight = '1.6';
+    wrapper.style.fontFamily = baseFontFamily;
+    wrapper.style.fontSize = baseFontSize;
+    wrapper.style.lineHeight = baseLineHeight;
     wrapper.style.color = '#24292f';
     wrapper.appendChild(temp);
 
