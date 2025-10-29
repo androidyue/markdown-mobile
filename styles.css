@@ -800,9 +800,10 @@ body.dark .preview-content :not(pre) > code {
   }
 
   .introjs-button {
-    padding: 0.65rem 1.25rem;
-    font-size: 0.95rem;
-    min-height: 44px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    min-height: auto;
+    line-height: 1.4;
   }
 
   .introjs-bullets,
@@ -811,7 +812,7 @@ body.dark .preview-content :not(pre) > code {
   }
 
   .introjs-tooltipbuttons {
-    padding: 0.75rem 1rem;
+    padding: 0.5rem 1rem;
   }
 }
 
