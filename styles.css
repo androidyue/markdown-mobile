@@ -438,8 +438,9 @@ body.dark .preview-content :not(pre) > code {
 
   .editor-pane.collapsed,
   .preview-pane.collapsed {
-    height: auto;
-    min-height: auto;
+    height: auto !important;
+    min-height: auto !important;
+    flex: 0 0 auto;
   }
 
   .editor-pane.collapsed .collapse-button i,
@@ -449,7 +450,7 @@ body.dark .preview-content :not(pre) > code {
 
   .editor-pane.collapsed textarea,
   .preview-pane.collapsed .preview-content {
-    display: none;
+    display: none !important;
   }
 }
 
