@@ -1,6 +1,6 @@
 (() => {
   // Build ID for cache busting verification
-  const BUILD_ID = 'BUILD_20251029_172408';
+  const BUILD_ID = 'BUILD_20251029_172643';
   console.log(`%c🚀 Markdown Studio ${BUILD_ID}`, 'color: #0969da; font-weight: bold; font-size: 14px;');
 
   const editor = document.getElementById('editor');
@@ -497,14 +497,20 @@ function greet(name) {
           const index = items.indexOf(el);
           const numberText = `${index + 1}. `;
 
+          // Debug: log the LI innerHTML to see structure
+          console.log('OL LI structure:', el.innerHTML.substring(0, 100));
+
           // Find first element child (skip text nodes)
           let firstElementChild = null;
           for (let child of el.childNodes) {
+            console.log('  Child node:', child.nodeType === Node.TEXT_NODE ? `TEXT: "${child.textContent}"` : `ELEMENT: ${child.tagName}`);
             if (child.nodeType === Node.ELEMENT_NODE) {
               firstElementChild = child;
               break;
             }
           }
+
+          console.log('  First element child:', firstElementChild ? firstElementChild.tagName : 'NONE');
 
           // Check if we already added the number
           const firstChild = el.firstChild;
