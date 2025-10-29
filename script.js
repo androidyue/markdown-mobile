@@ -852,6 +852,9 @@ function greet(name) {
       return;
     }
 
+    // Detect mobile device
+    const isMobile = window.innerWidth <= 768;
+
     // Start tour after a short delay to ensure everything is loaded
     setTimeout(() => {
       const intro = window.introJs();
@@ -863,7 +866,18 @@ function greet(name) {
         dontShowAgainLabel: "Don't show again",
         nextLabel: 'Next →',
         prevLabel: '← Back',
-        doneLabel: 'Done ✓'
+        doneLabel: 'Done ✓',
+        // Mobile-specific options
+        tooltipPosition: isMobile ? 'bottom' : 'auto',
+        positionPrecedence: isMobile ? ['bottom', 'top', 'right', 'left'] : ['bottom', 'top', 'left', 'right'],
+        scrollToElement: true,
+        scrollTo: 'tooltip',
+        scrollPadding: 30,
+        overlayOpacity: 0.8,
+        helperElementPadding: isMobile ? 5 : 10,
+        // Disable arrow on mobile for better positioning
+        showStepNumbers: false,
+        disableInteraction: true
       });
 
       intro.oncomplete(() => {
@@ -873,6 +887,18 @@ function greet(name) {
       intro.onexit(() => {
         localStorage.setItem(TOUR_SEEN_KEY, 'true');
       });
+
+      // On mobile, force bottom positioning for all tooltips
+      if (isMobile) {
+        intro.onbeforechange(function(targetElement) {
+          // Scroll to element
+          if (targetElement) {
+            setTimeout(() => {
+              targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+          }
+        });
+      }
 
       intro.start();
     }, 500);

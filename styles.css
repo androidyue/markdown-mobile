@@ -702,6 +702,10 @@ body.dark .preview-content :not(pre) > code {
 }
 
 /* Onboarding Tour Customization (Intro.js) */
+.introjs-overlay {
+  opacity: 0.8 !important;
+}
+
 .introjs-tooltip {
   background: var(--panel-bg);
   color: var(--text);
@@ -709,12 +713,15 @@ body.dark .preview-content :not(pre) > code {
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border);
   max-width: 400px;
+  min-width: 250px;
+  z-index: 999999 !important;
 }
 
 .introjs-tooltiptext {
   color: var(--text);
   font-size: 0.875rem;
   line-height: 1.6;
+  padding: 0.5rem;
 }
 
 .introjs-button {
@@ -727,6 +734,7 @@ body.dark .preview-content :not(pre) > code {
   font-weight: 500;
   text-shadow: none;
   transition: all var(--transition);
+  cursor: pointer;
 }
 
 .introjs-button:hover {
@@ -742,6 +750,7 @@ body.dark .preview-content :not(pre) > code {
 .introjs-skipbutton {
   color: var(--muted);
   font-weight: 500;
+  cursor: pointer;
 }
 
 .introjs-skipbutton:hover {
@@ -761,4 +770,61 @@ body.dark .preview-content :not(pre) > code {
   border: 2px solid var(--accent);
   box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
   border-radius: 8px;
+  z-index: 999998 !important;
+}
+
+.introjs-fixedTooltip {
+  position: fixed !important;
+}
+
+/* Mobile-specific adjustments for Intro.js */
+@media (max-width: 768px) {
+  .introjs-tooltip {
+    max-width: 90vw !important;
+    min-width: 280px;
+    position: fixed !important;
+    left: 5vw !important;
+    right: 5vw !important;
+    bottom: 20px !important;
+    top: auto !important;
+    margin: 0 !important;
+  }
+
+  .introjs-arrow {
+    display: none !important;
+  }
+
+  .introjs-tooltiptext {
+    font-size: 0.95rem;
+    padding: 1rem;
+  }
+
+  .introjs-button {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.95rem;
+    min-height: 44px;
+  }
+
+  .introjs-bullets,
+  .introjs-progress {
+    padding: 0.5rem 0;
+  }
+
+  .introjs-tooltipbuttons {
+    padding: 0.75rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .introjs-tooltip {
+    max-width: 95vw !important;
+    min-width: 260px;
+    left: 2.5vw !important;
+    right: 2.5vw !important;
+  }
+
+  .introjs-tooltiptext {
+    font-size: 0.9rem;
+    padding: 0.85rem;
+  }
 }
