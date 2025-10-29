@@ -1,6 +1,6 @@
 (() => {
   // Build ID for cache busting verification
-  const BUILD_ID = 'BUILD_20251029_172643';
+  const BUILD_ID = 'BUILD_20251029_173003';
   console.log(`%c🚀 Markdown Studio ${BUILD_ID}`, 'color: #0969da; font-weight: bold; font-size: 14px;');
 
   const editor = document.getElementById('editor');
@@ -497,30 +497,38 @@ function greet(name) {
           const index = items.indexOf(el);
           const numberText = `${index + 1}. `;
 
-          // Debug: log the LI innerHTML to see structure
-          console.log('OL LI structure:', el.innerHTML.substring(0, 100));
-
-          // Find first element child (skip text nodes)
-          let firstElementChild = null;
-          for (let child of el.childNodes) {
-            console.log('  Child node:', child.nodeType === Node.TEXT_NODE ? `TEXT: "${child.textContent}"` : `ELEMENT: ${child.tagName}`);
-            if (child.nodeType === Node.ELEMENT_NODE) {
-              firstElementChild = child;
-              break;
-            }
-          }
-
-          console.log('  First element child:', firstElementChild ? firstElementChild.tagName : 'NONE');
-
           // Check if we already added the number
           const firstChild = el.firstChild;
           const hasNumber = firstChild && firstChild.nodeType === Node.TEXT_NODE && /^\d+\.\s/.test(firstChild.textContent);
 
           if (!hasNumber) {
-            // If the first element child is strong/b, insert number inside it to prevent line break
-            if (firstElementChild && (firstElementChild.tagName === 'STRONG' || firstElementChild.tagName === 'B')) {
-              console.log('OL: Inserting number inside strong tag:', numberText, firstElementChild.textContent);
-              firstElementChild.insertBefore(document.createTextNode(numberText), firstElementChild.firstChild);
+            // Find first element child (skip text nodes)
+            let firstElementChild = null;
+            for (let child of el.childNodes) {
+              if (child.nodeType === Node.ELEMENT_NODE) {
+                firstElementChild = child;
+                break;
+              }
+            }
+
+            // Check if first element is P tag (marked.js wraps content in P)
+            let targetStrongTag = null;
+            if (firstElementChild && firstElementChild.tagName === 'P') {
+              // Look inside the P tag for strong/b
+              const firstChildOfP = firstElementChild.firstChild;
+              if (firstChildOfP && firstChildOfP.nodeType === Node.ELEMENT_NODE &&
+                  (firstChildOfP.tagName === 'STRONG' || firstChildOfP.tagName === 'B')) {
+                targetStrongTag = firstChildOfP;
+              }
+            } else if (firstElementChild && (firstElementChild.tagName === 'STRONG' || firstElementChild.tagName === 'B')) {
+              // Direct strong/b tag (no P wrapper)
+              targetStrongTag = firstElementChild;
+            }
+
+            // If we found a strong/b tag, insert number inside it to prevent line break
+            if (targetStrongTag) {
+              console.log('OL: Inserting number inside strong tag:', numberText, targetStrongTag.textContent.substring(0, 20));
+              targetStrongTag.insertBefore(document.createTextNode(numberText), targetStrongTag.firstChild);
             } else {
               // Otherwise prepend before first child
               console.log('OL: Inserting number before first child:', numberText);
